@@ -1,0 +1,15 @@
+{
+    "name": "savinmikhail/php-shm-demo",
+    "type": "project",
+    "require": {
+        "ext-sync": "^1.1",
+        "ext-shmop": "*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Savin Mikhail",
+            "email": "mikhail.d.savin@gmail.com"
+        }
+    ]
+}
