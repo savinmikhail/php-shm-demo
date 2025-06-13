@@ -2,7 +2,9 @@
 
 # Запускаем writer и reader параллельно, ждём 6 секунд, показываем логи
 run:
-	@echo "Запуск writer и reader..."
+	@pkill -f "php writer.php" 2>/dev/null || true
+	@pkill -f "php reader.php" 2>/dev/null || true
+	@echo "Запуск writer и reader…"
 	@php writer.php > writer.log &
 	@php reader.php > reader.log &
 	@sleep 6
@@ -10,7 +12,9 @@ run:
 	@cat writer.log
 	@echo "\n--- reader.log ---"
 	@cat reader.log
-	@$(MAKE) clean
+	@pkill -f "php writer.php" 2>/dev/null || true
+	@pkill -f "php reader.php" 2>/dev/null || true
+	@make clean
 
 clean:
 	-@rm -f writer.log reader.log

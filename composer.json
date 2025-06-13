@@ -2,6 +2,7 @@
     "name": "savinmikhail/php-shm-demo",
     "type": "project",
     "require": {
+        "php": "8.2",
         "ext-sync": "^1.1",
         "ext-shmop": "*"
     },

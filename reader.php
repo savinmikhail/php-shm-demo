@@ -1,22 +1,24 @@
 <?php
-// Настройка shared memory и мьютекса
 $key    = 0xDEADBEEF;
 $size   = 1024;
-$shm    = shmop_open($key, 'a', 0, 0);
+$shm    = shmop_open($key, 'c', 0666, $size);
 $mutex  = new SyncMutex('crypto_rate_mutex');
 
-for ($i = 0; $i < 10; $i++) {
-    // Критическая секция
+$val = 0;
+while (true) {
+
     $mutex->lock();
-    $data = shmop_read($shm, 0, 8);
+    $raw = shmop_read($shm, 0, 16);
     $mutex->unlock();
 
-    // Распаковываем и вычисляем задержку в мс
-    $written = unpack('d', $data)[1];
-    $now     = microtime(true);
-    $latency = ($now - $written) * 1000;
+    ['rate' => $rate, 'timestamp' => $ts] = unpack('drate/dtimestamp', $raw);
+    $latency = (microtime(true) - $ts) * 1_000;
 
-    echo sprintf("Latency: %.3f ms\n", $latency);
-    usleep(500000); // 0.5 секунды
+    if ($val !== $rate ) {
+        $val = $rate;
+        echo sprintf(
+            "Read:  rate=%.2f @ %.6f  → latency: %.3f ms\n",
+            $rate, $ts, $latency
+        );
+    }
 }
-
